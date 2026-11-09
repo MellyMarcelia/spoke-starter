@@ -1,5 +1,5 @@
 <script setup lang="ts">
-// Shows screen 01 by default. Screen 03 is at /#confirm, the component showcase at /#showcase.
+// Shows screen 01 by default. Screen 03 is at /#confirm, the component library at /#showcase (or /#showcase/<id>).
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import CheckAndConfirm from './screens/CheckAndConfirm.vue'
 import ChooseAService from './screens/ChooseAService.vue'
@@ -13,7 +13,7 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', syncHash))
 </script>
 
 <template>
-  <ComponentShowcase v-if="hash === '#showcase'" />
+  <ComponentShowcase v-if="hash.startsWith('#showcase')" />
   <CheckAndConfirm
     v-else-if="hash === '#confirm'"
     @back="console.log('Back')"
