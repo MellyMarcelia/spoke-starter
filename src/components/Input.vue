@@ -1,6 +1,7 @@
 <script setup lang="ts">
 // Input — Figma component 6:23.
 // Text field with a label above it. Focus shows the brand border.
+// Pass `error` to show the error state: red border and the message under the field.
 import { useId } from 'vue'
 
 withDefaults(
@@ -9,16 +10,21 @@ withDefaults(
     placeholder?: string
     type?: 'text' | 'email' | 'tel'
     autocomplete?: string
+    required?: boolean
+    error?: string
   }>(),
   { type: 'text' },
 )
 
+const emit = defineEmits<{ blur: [] }>()
+
 const model = defineModel<string>({ default: '' })
 const id = useId()
+const errorId = `${id}-error`
 </script>
 
 <template>
-  <div class="input">
+  <div class="input" :class="{ 'input--error': error }">
     <label :for="id" class="input__label text-label-field">{{ label }}</label>
     <input
       :id="id"
@@ -27,7 +33,12 @@ const id = useId()
       :type="type"
       :placeholder="placeholder"
       :autocomplete="autocomplete"
+      :aria-required="required || undefined"
+      :aria-invalid="error ? 'true' : undefined"
+      :aria-describedby="error ? errorId : undefined"
+      @blur="emit('blur')"
     />
+    <p v-if="error" :id="errorId" class="input__error text-card-caption">{{ error }}</p>
   </div>
 </template>
 
@@ -63,5 +74,17 @@ const id = useId()
   outline: none;
   border-color: var(--color-brand);
   box-shadow: inset 0 0 0 1px var(--color-brand);
+}
+
+/* Error state: same 2px treatment as focus, in the error colour. */
+.input--error .input__field,
+.input--error .input__field:focus {
+  border-color: var(--color-error);
+  box-shadow: inset 0 0 0 1px var(--color-error);
+}
+
+.input__error {
+  margin: 0;
+  color: var(--color-error);
 }
 </style>

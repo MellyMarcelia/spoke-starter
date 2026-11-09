@@ -19,7 +19,7 @@ const entries: Entry[] = [
   { id: 'button', name: 'Button', usage: `<Button label="Book this repair" variant="secondary" @click="…" />` },
   { id: 'tag', name: 'Tag', usage: `<Tag label="30 min" />` },
   { id: 'time-slot', name: 'TimeSlot', usage: `<TimeSlot label="16:30" :selected="…" :disabled="…" @select="…" />` },
-  { id: 'input', name: 'Input', usage: `<Input v-model="name" label="Your name" placeholder="…" />` },
+  { id: 'input', name: 'Input', usage: `<Input v-model="name" label="Your name" placeholder="…" required :error="…" @blur="…" />` },
   {
     id: 'service-card',
     name: 'ServiceCard',
@@ -135,8 +135,9 @@ onBeforeUnmount(() => window.removeEventListener('hashchange', scrollToHash))
       <section :id="byId['input'].id" class="library__section">
         <h2 class="library__heading text-card-title">{{ byId['input'].name }}</h2>
         <code class="library__file text-card-caption">src/components/Input.vue</code>
-        <div class="library__demo">
+        <div class="library__demo library__stack">
           <Input v-model="name" label="Your name" placeholder="First and last name" autocomplete="name" />
+          <Input label="Phone number" placeholder="+32 470 12 34 56" type="tel" required error="Enter your phone number" />
         </div>
         <pre class="library__usage"><code>{{ byId['input'].usage }}</code></pre>
       </section>
