@@ -26,6 +26,8 @@ defineEmits<{ click: [event: MouseEvent] }>()
 
 <style scoped>
 .button {
+  position: relative;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -34,6 +36,25 @@ defineEmits<{ click: [event: MouseEvent] }>()
   border-radius: var(--radius-md);
   white-space: nowrap;
   cursor: pointer;
+  transition:
+    transform var(--duration-fast) var(--easing-spring),
+    box-shadow var(--duration-fast) var(--easing-standard),
+    border-color var(--duration-fast) var(--easing-standard);
+}
+
+/* Sheen that sweeps across the button on hover, like light off a fresh frame. */
+.button::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    color-mix(in srgb, var(--color-on-brand) 45%, transparent) 50%,
+    transparent 70%
+  );
+  transform: translateX(-100%);
+  pointer-events: none;
 }
 
 .button--primary {
@@ -47,12 +68,42 @@ defineEmits<{ click: [event: MouseEvent] }>()
   border: 1px solid var(--color-border);
 }
 
+/* Hover: springs up, casts a brand-tinted shadow, and the sheen rides across. */
 .button:hover {
-  filter: brightness(0.95);
+  transform: translateY(calc(var(--space-4) * -0.5)) scale(1.03);
+  box-shadow: 0 var(--space-8) var(--space-16) calc(var(--space-4) * -1)
+    color-mix(in srgb, var(--color-brand) 45%, transparent);
 }
 
+.button:hover::after {
+  transform: translateX(100%);
+  transition: transform var(--duration-slow) var(--easing-standard);
+}
+
+.button--secondary:hover {
+  border-color: var(--color-brand);
+}
+
+/* Press: squashes back down. */
 .button:active {
-  filter: brightness(0.9);
+  transform: translateY(0) scale(0.97);
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button,
+  .button:hover::after {
+    transition: none;
+  }
+
+  .button:hover,
+  .button:active {
+    transform: none;
+  }
+
+  .button::after {
+    display: none;
+  }
 }
 
 .button:focus-visible {
