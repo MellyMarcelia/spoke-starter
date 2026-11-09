@@ -68,6 +68,11 @@ const errorId = `${id}-error`
   color: var(--color-text-muted);
 }
 
+/* Hide the placeholder as soon as the field gets focus, not only once typing starts. */
+.input__field:focus::placeholder {
+  color: transparent;
+}
+
 /* Figma's focus state is a 2px brand border. The extra 1px is an inset
    shadow so the field doesn't change size when it gets focus. */
 .input__field:focus {
