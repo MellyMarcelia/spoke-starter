@@ -20,7 +20,8 @@ The app runs at http://localhost:5173. Stop it with Ctrl+C.
 | `AGENTS.md` | The rules Codex and Claude read before every task. |
 | `LOG.md` | Your process log for the assignment. Fill it in while you work. |
 | `REFLECTION.md` | Your reflection for the assignment. |
-| `src/` | The app. Tokens go in `src/styles/tokens.css`, components in `src/components/`. |
+| `tokens/` | Design tokens from Figma: `tokens.json` (source) and `tokens.css` (CSS custom properties). |
+| `src/` | The Vue 3 app. Components go in `src/components/` as `.vue` files. |
 
 ## Keep this repo public and clean
 
