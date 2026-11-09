@@ -1,0 +1,14 @@
+/* Global base styles. Use tokens only — no hardcoded colours, spacing or radius. */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--color-surface);
+  color: var(--color-text-primary);
+  font: var(--font-card-body);
+  -webkit-font-smoothing: antialiased;
+}
