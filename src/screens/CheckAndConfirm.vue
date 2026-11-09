@@ -1,7 +1,7 @@
 <script setup lang="ts">
 // Screen 03 "Check and confirm" — Figma frame 7:128.
 // Built from TopBar, SummaryRow, Input and ActionBar.
-import { ref } from 'vue'
+import { computed, nextTick, ref, useTemplateRef } from 'vue'
 import ActionBar from '../components/ActionBar.vue'
 import Input from '../components/Input.vue'
 import SummaryRow from '../components/SummaryRow.vue'
@@ -28,13 +28,33 @@ const emit = defineEmits<{
 const name = ref('')
 const phone = ref('')
 
-function onSubmit() {
-  emit('confirm', { name: name.value, phone: phone.value })
+// Both fields are required. A field shows its error once the user has left it
+// (blur) or tried to submit, and the error clears as soon as they type something.
+const touched = ref({ name: false, phone: false })
+
+const nameError = computed(() =>
+  touched.value.name && !name.value.trim() ? 'Enter your name' : undefined,
+)
+const phoneError = computed(() =>
+  touched.value.phone && !phone.value.trim() ? 'Enter your phone number' : undefined,
+)
+
+const form = useTemplateRef<HTMLFormElement>('form')
+
+async function onSubmit() {
+  touched.value = { name: true, phone: true }
+  if (nameError.value || phoneError.value) {
+    // Move focus to the first empty field so keyboard and screen reader users land on it.
+    await nextTick()
+    form.value?.querySelector<HTMLInputElement>('[aria-invalid="true"]')?.focus()
+    return
+  }
+  emit('confirm', { name: name.value.trim(), phone: phone.value.trim() })
 }
 </script>
 
 <template>
-  <form class="check-confirm" @submit.prevent="onSubmit">
+  <form ref="form" class="check-confirm" novalidate @submit.prevent="onSubmit">
     <TopBar title="Book a repair" step="Step 3 of 3" @back="emit('back')" />
 
     <main class="check-confirm__content">
@@ -52,6 +72,9 @@ function onSubmit() {
         label="Your name"
         placeholder="First and last name"
         autocomplete="name"
+        required
+        :error="nameError"
+        @blur="touched.name = true"
       />
       <Input
         v-model="phone"
@@ -60,6 +83,9 @@ function onSubmit() {
         placeholder="+32 470 12 34 56"
         type="tel"
         autocomplete="tel"
+        required
+        :error="phoneError"
+        @blur="touched.phone = true"
       />
 
       <p class="check-confirm__note text-card-caption">
